@@ -18,6 +18,8 @@ from django.urls import path, include
 from rest_framework.schemas import get_schema_view
 from rest_framework.documentation import include_docs_urls
 from .views import index
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -29,4 +31,4 @@ urlpatterns = [
         get_schema_view(title="API", description="API for the API", version="1.0.0"),
         name="openapi-schema",
     ),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

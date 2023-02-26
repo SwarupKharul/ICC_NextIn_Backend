@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-w)3_fd3m#a*bdy__ln7!4g1)=tmf_^e&xm&!2o)-hmmj4fdbuk
 DEBUG = True
 
 ALLOWED_HOSTS = ["*", "iccbackend.up.railway.app", "localhost", "127.0.0.1", "0.0.0.0"]
-
+CSRF_TRUSTED_ORIGINS = ["https://iccbackend.up.railway.app"]
 
 # Application definition
 
@@ -78,13 +78,23 @@ WSGI_APPLICATION = "icc_backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "neondb",
+        "USER": "swarupkharulsk",
+        "PASSWORD": "qFWtygY62cHZ",
+        "HOST": "ep-orange-breeze-499187.ap-southeast-1.aws.neon.tech",
+        "PORT": "5432",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -127,6 +137,8 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = "/static/"
