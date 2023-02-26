@@ -1,0 +1,1 @@
+web: gunicorn 'icc_backend.wsgi'
