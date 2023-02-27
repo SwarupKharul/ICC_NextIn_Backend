@@ -10,3 +10,9 @@ def getAll(request):
         matches = Match.objects.all()
         serializer = MatchSerializer(matches, many=True)
         return JsonResponse(serializer.data, safe=False)
+    
+def getMatch(request, id):
+    if request.method == "GET":
+        match = Match.objects.get(id=id)
+        serializer = MatchSerializer(match)
+        return JsonResponse(serializer.data, safe=False)
