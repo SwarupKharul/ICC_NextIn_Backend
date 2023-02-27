@@ -1,0 +1,57 @@
+<head>
+    <style>
+        .center {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+
+<div class="center">
+    <!-- Show user details -->
+    <h3>Hi {{ user }},</h3>
+    <h4>Amount to be paid: {{ razorpay_amount }}</h4>
+   <!-- Payment Button -->
+   <button class="btn btn-primary" id="pay-btn">Proceed to payment</button>
+
+<!-- RAZORPAY INTEGRATION HERE -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+ <script>
+    var options = {
+       
+      // Enter the Key ID generated from the Dashboard
+      key: "{{ razorpay_merchant_key }}",
+
+      name: "ICC",
+       
+      // Amount is in currency subunits.
+      // Default currency is INR. Hence,
+      // 50000 refers to 50000 paise
+      amount: "{{ razorpay_amount }}",
+      currency: "{{ currency }}",
+
+      prefill:{
+        name: "Swarup",
+        email: "swa@gmail.com",
+        contact: "9191919191"
+      },
+       
+      // Pass the `id` obtained in the response of Step 1
+      order_id: "{{ razorpay_order_id }}",
+      callback_url: "{{ callback_url }}",
+    };
+     
+    // initialise razorpay with the options.
+    var rzp1 = new Razorpay(options);
+     
+    // add event listener to the payment button.
+    document.getElementById("pay-btn").onclick = function (e) {
+      rzp1.open();
+      e.preventDefault();
+    };
+  </script>
+</div>
+</div> 

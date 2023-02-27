@@ -24,7 +24,12 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", index),
-    path("matchs/", include("match.urls")),
+    path("api/", include("djoser.urls")),
+    path("api/", include("djoser.urls.jwt")),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path("me/", include("users.urls")),
+    path("matches/", include("match.urls")),
+    path("razorpay/", include("wallet.urls")),
     path("redoc/", include_docs_urls(title="API Docs")),
     path(
         "docs/",
