@@ -97,7 +97,7 @@ WSGI_APPLICATION = "icc_backend.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "icc1",
+        "NAME": "Test2",
         "USER": "swarupkharulsk",
         "PASSWORD": "qFWtygY62cHZ",
         "HOST": "ep-orange-breeze-499187.ap-southeast-1.aws.neon.tech",

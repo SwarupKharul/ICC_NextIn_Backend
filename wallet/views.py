@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import login_required
 import razorpay
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
-from .models import payment_record
-from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from .models import paymentRecord
+from .serializers import PaymentRecordSerializer
+from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from users.models import Profile
 
 razorpay_client = razorpay.Client(
@@ -43,14 +44,15 @@ def pay(request):
     context["user"] = profile
     context["callback_url"] = "paymenthandler/"
 
-    # Create payment_record
-    payment_instance = payment_record(
+    # Create paymentRecord
+    payment_instance = paymentRecord(
         user=profile.user,
         razorpay_order_id=razorpay_order["id"],
         razorpay_payment_id="",
         razorpay_signature="",
         no_of_tickets=tickets,
         tier=tier,
+        amount=amount,
         status="pending",
     )
 
@@ -78,16 +80,21 @@ def paymenthandler(request):
         # verify the payment signature.
         result = razorpay_client.utility.verify_payment_signature(params_dict)
 
-        # Update payment_record
-        payment_instance = payment_record.objects.filter(
+        # Update paymentRecord
+        payment_instance = paymentRecord.objects.filter(
             razorpay_order_id=razorpay_order_id
         ).update(
             razorpay_payment_id=payment_id,
             razorpay_signature=signature,
             status="success",
         )
-
-        return render(request, "paymentsuccess.html", {"message": "Payment Successful"})
+        # TODO: Combine the below function with update
+        payment_instance = paymentRecord.objects.get(
+            razorpay_order_id=razorpay_order_id
+        )
+        return HttpResponseRedirect(
+            f"http://localhost:3000/MintTicket?{payment_instance.amount}"
+        )
     else:
         # if other than POST request is made.
         return HttpResponseBadRequest()
@@ -96,3 +103,11 @@ def paymenthandler(request):
 @csrf_exempt
 def success(request):
     return render(request, "success.html")
+
+
+@api_view(["GET"])
+def myTickets(request):
+    # return json response of all the tickets of the user.
+    tickets = paymentRecord.objects.filter(user=request.user)
+    serializer = PaymentRecordSerializer(tickets, many=True)
+    return JsonResponse(serializer.data, safe=False)

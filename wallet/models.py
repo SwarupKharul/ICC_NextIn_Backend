@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class payment_record(models.Model):
+class paymentRecord(models.Model):
     objects = None
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     razorpay_order_id = models.CharField(max_length=100)
@@ -13,6 +13,7 @@ class payment_record(models.Model):
     status = models.CharField(max_length=100)
     tier = models.CharField(default="no", max_length=50)
     no_of_tickets = models.IntegerField(default=1)
+    amount = models.BigIntegerField(default=0)
 
     def __str__(self):
         return self.user.email

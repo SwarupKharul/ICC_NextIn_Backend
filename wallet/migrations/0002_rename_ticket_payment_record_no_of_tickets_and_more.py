@@ -10,12 +10,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameField(
-            model_name="payment_record",
+            model_name="paymentRecord",
             old_name="ticket",
             new_name="no_of_tickets",
         ),
         migrations.AddField(
-            model_name="payment_record",
+            model_name="paymentRecord",
             name="tier",
             field=models.CharField(default="no", max_length=50),
         ),

@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="payment_record",
+            name="paymentRecord",
             fields=[
                 (
                     "id",
