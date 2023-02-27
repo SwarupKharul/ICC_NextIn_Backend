@@ -27,7 +27,7 @@ Pillow==9.4.0
 platformdirs==3.0.0
 psycopg2-binary==2.9.5
 pycparser==2.21
-PyJWT
+PyJWT==2.6.0
 python3-openid==3.2.0
 pytz==2022.7.1
 PyYAML==6.0
