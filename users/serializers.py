@@ -14,10 +14,23 @@ class UserCreateSerializer(UserCreateSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
+    balance = serializers.SerializerMethodField()
+
+    def get_balance(self, obj):
+        profile = Profile.objects.get(user=obj)
+        return profile.balance
 
     class Meta:
         model = Profile
-        fields = "__all__"
+        fields = [
+            "user",
+            "age",
+            "dob",
+            "name",
+            "favourite_team",
+            "favourite_player",
+            "balance",
+        ]
 
 
 class AvatarSerializer(serializers.ModelSerializer):

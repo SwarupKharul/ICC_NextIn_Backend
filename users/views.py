@@ -32,3 +32,15 @@ def getAvatar(request):
     avatar = Avatar.objects.get(profile=profile)
     serializer = AvatarSerializer(avatar)
     return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(["POST"])
+def reduceBalance(request):
+    reduce_amount = request.data["reduce_amount"]
+    profile = Profile.objects.get(user=request.user)
+    profile.balance -= reduce_amount
+    if profile.balance < 0:
+        # Send message Balance to low and throw 403 error PermissionDenied
+        return JsonResponse({"message": "Balance to low"}, status=403, safe=False)
+    profile.save()
+    return JsonResponse({"balance": profile.balance}, safe=False)

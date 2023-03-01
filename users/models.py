@@ -30,6 +30,7 @@ class Profile(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
     favourite_team = models.CharField(max_length=100, null=True, blank=True)
     favourite_player = models.CharField(max_length=100, null=True, blank=True)
+    balance = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.email

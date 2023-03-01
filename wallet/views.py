@@ -92,6 +92,13 @@ def paymenthandler(request):
         payment_instance = paymentRecord.objects.get(
             razorpay_order_id=razorpay_order_id
         )
+
+        # Add amount to user's wallet
+        user = payment_instance.user
+        profile = Profile.objects.get(user=user)
+        profile.balance += payment_instance.amount
+        profile.save()
+
         return HttpResponseRedirect(
             f"http://localhost:3000/MintTicket?{payment_instance.amount}"
         )
