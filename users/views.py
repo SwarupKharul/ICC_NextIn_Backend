@@ -17,9 +17,18 @@ class UserAPIView(RetrieveUpdateDestroyAPIView):
 
 @api_view(["POST"])
 def createAvatar(request):
-    data = request.POST
+    data = request.data
+    print(data)
     serializer = AvatarSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
         return JsonResponse(serializer.data, safe=False)
     return JsonResponse(serializer.errors, safe=False)
+
+
+@api_view(["GET"])
+def getAvatar(request):
+    profile = Profile.objects.get(user=request.user)
+    avatar = Avatar.objects.get(profile=profile)
+    serializer = AvatarSerializer(avatar)
+    return JsonResponse(serializer.data, safe=False)

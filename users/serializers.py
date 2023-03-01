@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Profile
+from .models import Profile, Avatar
 from djoser.serializers import UserCreateSerializer
 from django.contrib.auth import get_user_model
 
@@ -22,5 +22,5 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class AvatarSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Profile
+        model = Avatar
         fields = "__all__"
