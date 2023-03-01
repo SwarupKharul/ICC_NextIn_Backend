@@ -107,7 +107,7 @@ def success(request):
 
 @api_view(["GET"])
 def myTickets(request):
-    # return json response of all the tickets of the user.
     tickets = paymentRecord.objects.filter(user=request.user)
     serializer = PaymentRecordSerializer(tickets, many=True)
+    print(serializer.data)
     return JsonResponse(serializer.data, safe=False)

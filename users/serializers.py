@@ -12,9 +12,15 @@ class UserCreateSerializer(UserCreateSerializer):
         fields = ("email", "username", "password")
 
 
-class userProfileSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
 
+    class Meta:
+        model = Profile
+        fields = "__all__"
+
+
+class AvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = "__all__"

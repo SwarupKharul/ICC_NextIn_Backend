@@ -1,9 +1,12 @@
 from rest_framework import serializers
 
 from .models import paymentRecord
+from match.serializers import MatchSerializer
 
 
 class PaymentRecordSerializer(serializers.ModelSerializer):
+    match = MatchSerializer()
+
     class Meta:
         model = paymentRecord
         fields = (
@@ -14,4 +17,5 @@ class PaymentRecordSerializer(serializers.ModelSerializer):
             "status",
             "tier",
             "no_of_tickets",
+            "match",
         )

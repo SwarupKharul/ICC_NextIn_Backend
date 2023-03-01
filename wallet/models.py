@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from match.models import Match
 
 User = get_user_model()
 
@@ -14,6 +15,7 @@ class paymentRecord(models.Model):
     tier = models.CharField(default="no", max_length=50)
     no_of_tickets = models.IntegerField(default=1)
     amount = models.BigIntegerField(default=0)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.user.email
