@@ -19,6 +19,8 @@ class UserAPIView(RetrieveUpdateDestroyAPIView):
 def createAvatar(request):
     data = request.data
     print(data)
+    profile = Profile.objects.get(user=request.user)
+    data["profile"] = profile.id
     serializer = AvatarSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
