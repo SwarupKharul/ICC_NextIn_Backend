@@ -13,7 +13,7 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         print("test")
         # Generate random rarity
-        rarity = random.randint(1, 100)
+        rarity = random.randint(1, 25)
         print("rarity", rarity)
         Profile.objects.create(user=instance, rarity=rarity)
 

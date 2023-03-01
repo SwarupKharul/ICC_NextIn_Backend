@@ -21,12 +21,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_balance(self, obj):
         profile = Profile.objects.get(user=obj)
         return profile.balance
-    
 
     def get_level(self, obj):
         profile = Profile.objects.get(user=obj)
         return profile.level
-    
+
     def get_rarity(self, obj):
         profile = Profile.objects.get(user=obj)
         return profile.rarity

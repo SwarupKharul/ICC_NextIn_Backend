@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import paymentRecord
+from .models import paymentRecord, transaction
 from match.serializers import MatchSerializer
 
 
@@ -17,5 +17,30 @@ class PaymentRecordSerializer(serializers.ModelSerializer):
             "status",
             "tier",
             "no_of_tickets",
+            "amount",
             "match",
+            "timestamp",
+        )
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = transaction
+        fields = (
+            "buyer",
+            "seller",
+            "amount",
+            "note",
+        )
+
+class GetTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = transaction
+        fields = (
+            "buyer",
+            "transaction_hash",
+            "seller",
+            "amount",
+            "timestamp",
+            "note",
         )

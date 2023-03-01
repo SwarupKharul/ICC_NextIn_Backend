@@ -3,8 +3,11 @@ from django.contrib.auth.decorators import login_required
 import razorpay
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
-from .models import paymentRecord
-from .serializers import PaymentRecordSerializer
+from django.db.models import Q
+
+from match.models import Match
+from .models import paymentRecord, transaction
+from .serializers import PaymentRecordSerializer, TransactionSerializer, GetTransactionSerializer
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from users.models import Profile
 
@@ -23,6 +26,7 @@ def pay(request):
     tickets = request.GET["tickets"]
     tier = request.GET["tier"]
     amount = request.GET["amount"]
+    match_id = request.GET["match"]
     currency = "INR"
     print(profile, "jfhaskdjfhdskfhdsghrehghrjkghioer")
     razorpay_order = razorpay_client.order.create(
@@ -44,6 +48,8 @@ def pay(request):
     context["user"] = profile
     context["callback_url"] = "paymenthandler/"
 
+    match = Match.objects.get(id=match_id)
+
     # Create paymentRecord
     payment_instance = paymentRecord(
         user=profile.user,
@@ -54,6 +60,7 @@ def pay(request):
         tier=tier,
         amount=amount,
         status="pending",
+        match=match,
     )
 
     payment_instance.save()
@@ -118,3 +125,33 @@ def myTickets(request):
     serializer = PaymentRecordSerializer(tickets, many=True)
     print(serializer.data)
     return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(["GET"])
+def getTransactions(request):
+    transactions = transaction.objects.filter(
+        Q(buyer=request.user) | Q(seller=request.user)
+    )
+    serializer = GetTransactionSerializer(transactions, many=True)
+    print(serializer.data)
+    return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(["POST"])
+def buy(request):
+    data = request.data
+    data["buyer"] = request.user.id
+    print(data)
+    # Deduct amount from users profile balance
+    profile = Profile.objects.get(user=request.user)
+    profile.balance -= data["amount"]
+    profile.save()
+    # Add amount to seller's profile balance
+    seller = Profile.objects.get(user=data["seller"])
+    seller.balance += data["amount"]
+    seller.save()
+    serializer = TransactionSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return JsonResponse(serializer.data, safe=False)
+    return JsonResponse(serializer.errors, safe=False)
