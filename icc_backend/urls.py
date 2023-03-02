@@ -30,6 +30,7 @@ urlpatterns = [
     path("me/", include("users.urls")),
     path("matches/", include("match.urls")),
     path("razorpay/", include("wallet.urls")),
+    path("store/", include("store.urls")),
     path("redoc/", include_docs_urls(title="API Docs")),
     path(
         "docs/",

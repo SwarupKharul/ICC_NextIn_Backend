@@ -107,7 +107,7 @@ def paymenthandler(request):
         # Add amount to user's wallet
         user = payment_instance.user
         profile = Profile.objects.get(user=user)
-        profile.balance += payment_instance.amount
+        profile.balance += int(payment_instance.amount / 100)
         profile.save()
 
         return HttpResponseRedirect(
@@ -153,7 +153,7 @@ def buy(request):
     print(data)
     # Deduct amount from users profile balance
     profile = Profile.objects.get(user=request.user)
-    profile.balance -= data["amount"]
+    profile.balance -= int(data["amount"] / 100)
     if profile.balance < 0:
         # Send message Balance to low and throw 403 error PermissionDenied
         return JsonResponse({"message": "Balance to low"}, status=403, safe=False)
@@ -229,10 +229,10 @@ def cpaymenthandler(request):
         # Add amount to user's wallet
         user = transaction_instance.buyer
         profile = Profile.objects.get(user=user)
-        profile.balance += transaction_instance.amount
+        profile.balance += int(transaction_instance.amount / 100)
         profile.save()
 
-        return HttpResponseRedirect(f"http://localhost:3000/profile")
+        return HttpResponseRedirect(f"http://localhost:3000/home")
     else:
         # if other than POST request is made.
         return HttpResponseBadRequest()
