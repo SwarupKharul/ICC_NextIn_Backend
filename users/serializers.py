@@ -13,7 +13,7 @@ class UserCreateSerializer(UserCreateSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    user = serializers.SerializerMethodField(read_only=True)
     balance = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
     rarity = serializers.SerializerMethodField()
@@ -29,6 +29,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_rarity(self, obj):
         profile = Profile.objects.get(user=obj)
         return profile.rarity
+    
+    def get_user(self, obj):
+        profile = Profile.objects.get(user=obj)
+        return profile.user.id
 
     class Meta:
         model = Profile

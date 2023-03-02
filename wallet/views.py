@@ -4,6 +4,7 @@ import razorpay
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from django.contrib.auth import get_user_model
 
 from match.models import Match
 from .models import paymentRecord, transaction
@@ -14,6 +15,8 @@ from .serializers import (
 )
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from users.models import Profile
+
+User = get_user_model()
 
 razorpay_client = razorpay.Client(
     auth=(
@@ -32,16 +35,13 @@ def pay(request):
     amount = request.GET["amount"]
     match_id = request.GET["match"]
     currency = "INR"
-    print(profile, "jfhaskdjfhdskfhdsghrehghrjkghioer")
     razorpay_order = razorpay_client.order.create(
         {
-            # "id": "order_EKwxwAgItmmXdp",
             "amount": amount,
-            "currency": "INR",
+            "currency": currency,
             "receipt": "receipt#1",
         }
     )
-    # print(razorpay_order)
 
     # we need to pass these details to frontend.
     context = {}
@@ -167,3 +167,72 @@ def buy(request):
         serializer.save()
         return JsonResponse(serializer.data, safe=False)
     return JsonResponse(serializer.errors, safe=False)
+
+
+def convert(request):
+    id = request.GET["user"]
+    profile = Profile.objects.get(user=id)
+    amount = request.GET["amount"]
+
+    currency = "INR"
+    razorpay_order = razorpay_client.order.create(
+        {
+            "amount": amount,
+            "currency": currency,
+            "receipt": "receipt#1",
+        }
+    )
+
+    # we need to pass these details to frontend.
+    context = {}
+    context["razorpay_order_id"] = razorpay_order["id"]
+    context["razorpay_merchant_key"] = "rzp_test_x2pbcVHTxSvbXk"
+    context["razorpay_amount"] = amount
+    context["currency"] = currency
+    context["user"] = profile
+    context["callback_url"] = "paymenthandler/"
+
+    # Create paymentRecord
+    transaction_instance = transaction(
+        buyer=profile.user,
+        amount=amount,
+        seller=User.objects.get(email="admin@gmail.com"),
+        note=razorpay_order["id"],
+    )
+
+    transaction_instance.save()
+
+    return render(request, "pay.html", context)
+
+
+@csrf_exempt
+def cpaymenthandler(request):
+    # only accept POST request.
+    if request.method == "POST":
+        print(request.POST)
+        payment_id = request.POST.get("razorpay_payment_id", "")
+        razorpay_order_id = request.POST.get("razorpay_order_id", "")
+        signature = request.POST.get("razorpay_signature", "")
+        params_dict = {
+            "razorpay_order_id": razorpay_order_id,
+            "razorpay_payment_id": payment_id,
+            "razorpay_signature": signature,
+        }
+
+        print(params_dict)
+
+        # verify the payment signature.
+        result = razorpay_client.utility.verify_payment_signature(params_dict)
+
+        transaction_instance = transaction.objects.get(note=razorpay_order_id)
+
+        # Add amount to user's wallet
+        user = transaction_instance.buyer
+        profile = Profile.objects.get(user=user)
+        profile.balance += transaction_instance.amount
+        profile.save()
+
+        return HttpResponseRedirect(f"http://localhost:3000/profile")
+    else:
+        # if other than POST request is made.
+        return HttpResponseBadRequest()
