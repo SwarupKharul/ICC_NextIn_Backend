@@ -31,7 +31,7 @@ class Profile(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
     favourite_team = models.CharField(max_length=100, null=True, blank=True)
     favourite_player = models.CharField(max_length=100, null=True, blank=True)
-    balance = models.IntegerField(default=0)
+    balance = models.IntegerField(default=100)
     level = models.IntegerField(default=1)
     rarity = models.IntegerField(default=0)
 
