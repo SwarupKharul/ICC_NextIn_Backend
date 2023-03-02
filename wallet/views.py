@@ -7,7 +7,11 @@ from django.db.models import Q
 
 from match.models import Match
 from .models import paymentRecord, transaction
-from .serializers import PaymentRecordSerializer, TransactionSerializer, GetTransactionSerializer
+from .serializers import (
+    PaymentRecordSerializer,
+    TransactionSerializer,
+    GetTransactionSerializer,
+)
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from users.models import Profile
 
@@ -134,7 +138,12 @@ def getTransactions(request):
     )
     serializer = GetTransactionSerializer(transactions, many=True)
     print(serializer.data)
-    return JsonResponse(serializer.data, safe=False)
+    context = serializer.data
+    print(context)
+    for c in context:
+        c["buyer"] = c["buyer"]["wallet_address"]
+        c["seller"] = c["seller"]["wallet_address"]
+    return JsonResponse(context, safe=False)
 
 
 @api_view(["POST"])
@@ -145,6 +154,9 @@ def buy(request):
     # Deduct amount from users profile balance
     profile = Profile.objects.get(user=request.user)
     profile.balance -= data["amount"]
+    if profile.balance < 0:
+        # Send message Balance to low and throw 403 error PermissionDenied
+        return JsonResponse({"message": "Balance to low"}, status=403, safe=False)
     profile.save()
     # Add amount to seller's profile balance
     seller = Profile.objects.get(user=data["seller"])

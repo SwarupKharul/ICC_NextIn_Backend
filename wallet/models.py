@@ -43,4 +43,4 @@ class transaction(models.Model):
     note = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return self.user.email
+        return self.transaction_hash

@@ -95,12 +95,20 @@ WSGI_APPLICATION = "icc_backend.wsgi.application"
 # }
 
 DATABASES = {
+    # "default": {
+    #     "ENGINE": "django.db.backends.postgresql",
+    #     "NAME": "Test2",
+    #     "USER": "swarupkharulsk",
+    #     "PASSWORD": "qFWtygY62cHZ",
+    #     "HOST": "ep-orange-breeze-499187.ap-southeast-1.aws.neon.tech",
+    #     "PORT": "5432",
+    # }
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "Test2",
-        "USER": "swarupkharulsk",
-        "PASSWORD": "qFWtygY62cHZ",
-        "HOST": "ep-orange-breeze-499187.ap-southeast-1.aws.neon.tech",
+        "NAME": "bkicaluy",
+        "USER": "bkicaluy",
+        "PASSWORD": "AxSdD9w_F_9tsZVyaVUQIJ5L7VMMObZP",
+        "HOST": "tiny.db.elephantsql.com",
         "PORT": "5432",
     }
 }

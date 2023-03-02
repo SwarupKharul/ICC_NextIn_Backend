@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from .models import paymentRecord, transaction
 from match.serializers import MatchSerializer
+from users.serializers import UserCreateSerializer
 
 
 class PaymentRecordSerializer(serializers.ModelSerializer):
@@ -33,7 +34,11 @@ class TransactionSerializer(serializers.ModelSerializer):
             "note",
         )
 
+
 class GetTransactionSerializer(serializers.ModelSerializer):
+    buyer = UserCreateSerializer()
+    seller = UserCreateSerializer()
+
     class Meta:
         model = transaction
         fields = (
