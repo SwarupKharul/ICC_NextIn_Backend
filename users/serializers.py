@@ -29,7 +29,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_rarity(self, obj):
         profile = Profile.objects.get(user=obj)
         return profile.rarity
-    
+
     def get_user(self, obj):
         profile = Profile.objects.get(user=obj)
         return profile.user.id
@@ -49,7 +49,38 @@ class UserProfileSerializer(serializers.ModelSerializer):
         ]
 
 
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = "__all__"
+
+
 class AvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Avatar
         fields = "__all__"
+
+
+class AvatarProfileSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = Avatar
+        fields = [
+            "profile",
+            "bgColor",
+            "earSize",
+            "eyeBrowStyle",
+            "eyeStyle",
+            "faceColor",
+            "glassesStyle",
+            "hairColor",
+            "hairStyle",
+            "hatColor",
+            "hatStyle",
+            "mouthStyle",
+            "noseStyle",
+            "sex",
+            "shirtColor",
+            "shirtStyle",
+        ]

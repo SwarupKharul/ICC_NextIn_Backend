@@ -153,7 +153,7 @@ def buy(request):
     print(data)
     # Deduct amount from users profile balance
     profile = Profile.objects.get(user=request.user)
-    profile.balance -= int(data["amount"] / 100)
+    profile.balance -= data["amount"]
     if profile.balance < 0:
         # Send message Balance to low and throw 403 error PermissionDenied
         return JsonResponse({"message": "Balance to low"}, status=403, safe=False)

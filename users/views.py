@@ -2,9 +2,14 @@ from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Profile, Avatar
 from .permissions import IsOwnerProfileOrReadOnly
-from .serializers import UserProfileSerializer, AvatarSerializer
+from .serializers import (
+    UserProfileSerializer,
+    AvatarSerializer,
+    AvatarProfileSerializer,
+)
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
+from django.core import serializers
 
 
 class UserAPIView(RetrieveUpdateDestroyAPIView):
@@ -32,8 +37,13 @@ def createAvatar(request):
 def getAvatar(request):
     profile = Profile.objects.get(user=request.user)
     avatar = Avatar.objects.get(profile=profile)
-    serializer = AvatarSerializer(avatar)
-    return JsonResponse(serializer.data, safe=False)
+    serializer = AvatarProfileSerializer(avatar)
+    context = serializer.data
+
+    # profile_serializer = AvatarProfileSerializer(profile)
+    # # Add profile instance to context
+    # context["profile"] = profile_serializer.data
+    return JsonResponse(context, safe=False)
 
 
 @api_view(["POST"])
