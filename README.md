@@ -1,4 +1,4 @@
-# ### Team Information
+### Team Information
 ------------
 ###### Team Name - Bits Smashers
 ###### Track - FinTech
