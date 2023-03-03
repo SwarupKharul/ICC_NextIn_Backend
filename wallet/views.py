@@ -111,7 +111,7 @@ def paymenthandler(request):
         profile.save()
 
         return HttpResponseRedirect(
-            f"http://localhost:3000/MintTicket?{payment_instance.amount}"
+            f"https://icc-cricverse.vercel.app/MintTicket?{payment_instance.amount}"
         )
     else:
         # if other than POST request is made.
@@ -232,7 +232,7 @@ def cpaymenthandler(request):
         profile.balance += int(transaction_instance.amount / 100)
         profile.save()
 
-        return HttpResponseRedirect(f"http://localhost:3000/home")
+        return HttpResponseRedirect(f"https://icc-cricverse.vercel.app/home")
     else:
         # if other than POST request is made.
         return HttpResponseBadRequest()
